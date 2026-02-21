@@ -4,7 +4,7 @@ import cors from "cors"
 import http from "http"
 import "dotenv/config"
 import { connectDB } from "./lib/db.js"
-import userRouter from "./routes/userroutes.js"
+import userRouter from "./routes/userRoutes.js"
 import messageRouter from "./routes/messageRoutes.js"
 import { Server } from 'socket.io';
 
