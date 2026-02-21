@@ -10,22 +10,43 @@ export const getUsersForSidebar = async (req, res) => {
         const userId = req.user._id;
         const filteredUsers = await User.find({ _id: { $ne: userId } }).select("-password"); // ne means not equal to
 
-        // Count number of messages not seen
         const unseenMessages = {};
+        const usersWithLastMessageTime = [];
+
         const promises = filteredUsers.map(async (user) => {
-            const messages = await Message.find({
+            // 1. Check for unseen messages
+            const unseenMsgs = await Message.countDocuments({
                 senderId: user._id,
                 receiverId: userId,
                 seen: false
             });
 
-            if (messages.length > 0) {
-                unseenMessages[user._id] = messages.length;
+            if (unseenMsgs > 0) {
+                unseenMessages[user._id] = unseenMsgs;
             }
+
+            // 2. Find the latest message exchanged between the two users
+            const latestMessage = await Message.findOne({
+                $or: [
+                    { senderId: userId, receiverId: user._id },
+                    { senderId: user._id, receiverId: userId }
+                ]
+            }).sort({ createdAt: -1 });
+
+            const lastMessageTime = latestMessage ? new Date(latestMessage.createdAt).getTime() : 0;
+
+            usersWithLastMessageTime.push({
+                ...user.toObject(),
+                lastMessageTime
+            });
         });
 
         await Promise.all(promises);
-        res.json({ success: true, users: filteredUsers, unseenMessages })
+
+        // Sort users so that the ones with the most recent messages are at the very top
+        usersWithLastMessageTime.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+
+        res.json({ success: true, users: usersWithLastMessageTime, unseenMessages })
     }
     catch (error) {
         console.log(error.message);

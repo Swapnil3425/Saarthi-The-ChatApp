@@ -44,6 +44,17 @@ export const ChatProvider = ({ children }) => {
 
             if (data.success) {
                 setMessages((prevMessages) => [...prevMessages, data.newMessage]);
+
+                // Move selected user to the top of the users list
+                setUsers((prevUsers) => {
+                    const existingUsers = [...prevUsers];
+                    const userIndex = existingUsers.findIndex(u => u._id === selectedUser._id);
+                    if (userIndex > -1) {
+                        const [user] = existingUsers.splice(userIndex, 1);
+                        existingUsers.unshift(user);
+                    }
+                    return existingUsers;
+                });
             }
             else {
                 toast.error(data.message);
@@ -58,6 +69,17 @@ export const ChatProvider = ({ children }) => {
         if (!socket) return;
 
         socket.on("newMessage", (newMessage) => {
+            // Move the sender to the top of the users list
+            setUsers((prevUsers) => {
+                const existingUsers = [...prevUsers];
+                const senderIndex = existingUsers.findIndex(u => u._id === newMessage.senderId);
+                if (senderIndex > -1) {
+                    const [sender] = existingUsers.splice(senderIndex, 1);
+                    existingUsers.unshift(sender);
+                }
+                return existingUsers;
+            });
+
             if (selectedUser && newMessage.senderId === selectedUser._id) {
                 newMessage.seen = true;
                 setMessages((prevMessages) => [...prevMessages, newMessage]);
