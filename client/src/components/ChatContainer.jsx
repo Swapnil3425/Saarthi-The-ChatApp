@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 
 const ChatContainer = () => {
 
-  const { messages, selectedUser, setSelectedUser, sendMessage, getMessages } = useContext(ChatContext)
+  const { messages, selectedUser, setSelectedUser, sendMessage, getMessages, setShowDetails } = useContext(ChatContext)
   const { authUser, onlineUsers } = useContext(AuthContext)
 
   const scrollEnd = useRef();
@@ -63,13 +63,15 @@ const ChatContainer = () => {
     <div className='h-full overflow-scroll relative backdrop-blur-lg'>
       {/* Chat Header */}
       <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500'>
-        <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 rounded-full' />
-        <p className='text-lg text-white flex-1 flex items-center gap-2'>
-          {selectedUser.fullName}
-          {onlineUsers.includes(selectedUser._id) &&<span className='w-2 h-2 rounded-full bg-green-500'></span>}
-        </p>
-        <img onClick={() => { setSelectedUser(null) }} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
-        <img src={assets.help_icon} alt="" className='max-md:hidden max-w-5' />
+        <img onClick={() => { setSelectedUser(null); setShowDetails(false) }} src={assets.arrow_icon} alt="" className='md:hidden max-w-7 cursor-pointer rotate-180' />
+        <img onClick={() => setShowDetails(true)} src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 rounded-full cursor-pointer' />
+        <div onClick={() => setShowDetails(true)} className='flex-1 flex flex-col cursor-pointer'>
+          <p className='text-lg text-white flex items-center gap-2'>
+            {selectedUser.fullName}
+            {onlineUsers.includes(selectedUser._id) && <span className='w-2 h-2 rounded-full bg-green-500'></span>}
+          </p>
+        </div>
+        <img onClick={() => setShowDetails(true)} src={assets.help_icon} alt="" className='max-w-5 cursor-pointer' />
       </div>
 
       {/* Chat */}

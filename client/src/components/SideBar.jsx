@@ -8,11 +8,12 @@ import SaarthiLogo from './SaarthiLogo'
 const SideBar = () => {
 
     const { getUsers, users, selectedUser, setSelectedUser,
-        unseenMessages, setUnseenMessages } = useContext(ChatContext)
+        unseenMessages, setUnseenMessages, setShowDetails } = useContext(ChatContext)
 
     const { logout, onlineUsers } = useContext(AuthContext)
 
-    const [input, setInput] = useState(false)
+    const [input, setInput] = useState("")
+    const [showMenu, setShowMenu] = useState(false)
 
     const navigate = useNavigate();
 
@@ -23,15 +24,15 @@ const SideBar = () => {
     }, [onlineUsers])
 
     return (
-        <div className={`bg-[#818582]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${selectedUser ? "max-md-hidden" : ''}`}>
+        <div className={`bg-[#818582]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${selectedUser ? "max-md:hidden" : ''}`}>
             <div className='pb-5'>
                 <div className='flex justify-between items-center'>
                     <SaarthiLogo />
 
                     <div className='relative py-2 group'>
-                        <img src={assets.menu_icon} alt="menu" className='max-h-5 cursor-pointer' />
-                        <div className='absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-200 hidden group-hover:block'>
-                            <p onClick={() => navigate('/profile')} className='text-sm cursor-pointer'>Edit Profile</p>
+                        <img onClick={() => setShowMenu(prev => !prev)} src={assets.menu_icon} alt="menu" className='max-h-5 cursor-pointer' />
+                        <div className={`absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-200 ${showMenu ? 'block' : 'hidden'} group-hover:block`}>
+                            <p onClick={() => { navigate('/profile'); setShowMenu(false) }} className='text-sm cursor-pointer'>Edit Profile</p>
                             <hr className='my-2 border-t border-gray-500' />
                             <p onClick={() => logout()} className='text-sm cursor-pointer'>Logout</p>
                         </div>
@@ -40,15 +41,16 @@ const SideBar = () => {
 
                 <div className='bg-[#282142] rounded-full flex items-center gap-2 py-3 px-4 mt-5'>
                     <img src={assets.search_icon} alt="Search" className='w-3' />
-                    <input onChange={(e) => { setInput(e.target.value) }} type="text" className='bg-transparent border-none outline-none text-white text-xs placeholder-[#c8c8c8] flex-1' placeholder='Search User...' />
+                    <input onChange={(e) => { setInput(e.target.value) }} value={input} type="text" className='bg-transparent border-none outline-none text-white text-xs placeholder-[#c8c8c8] flex-1' placeholder='Search User...' />
                 </div>
             </div>
 
             <div className='flex flex-col'>
                 {filteredUsers.map((user, index) => (
                     <div onClick={() => {
-                        setSelectedUser(user),
-                            setUnseenMessages(prev => ({ ...prev, [user._id]: 0 }))
+                        setSelectedUser(user);
+                        setUnseenMessages(prev => ({ ...prev, [user._id]: 0 }));
+                        setShowDetails(false);
                     }} key={index} className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id && 'bg-[#282142]/50'}`}>
 
                         <img src={user?.profilePic || assets.avatar_icon} alt="" className='w-[35px] aspect-[1/1] rounded-full' />

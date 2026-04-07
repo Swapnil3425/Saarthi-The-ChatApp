@@ -19,7 +19,7 @@ const SaarthiLogo = ({ size = "normal" }) => {
                 <path d="M260 135.002C260 143.287 253.284 150.002 245 150.002C236.716 150.002 230 143.287 230 135.002C230 126.717 236.716 120.002 245 120.002C253.284 120.002 260 126.717 260 135.002Z" fill="white" />
             </svg>
             <div className="flex flex-col">
-                <span className={`font-bold tracking-wide ${isBig ? 'text-7xl' : 'text-xl'} text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400 transition-all duration-500 group-hover:from-indigo-400 group-hover:to-violet-400`}>
+                <span className={`font-bold tracking-wide ${isBig ? 'text-5xl sm:text-7xl' : 'text-xl'} text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400 transition-all duration-500 group-hover:from-indigo-400 group-hover:to-violet-400`}>
                     Saarthi
                 </span>
                 {isBig && (

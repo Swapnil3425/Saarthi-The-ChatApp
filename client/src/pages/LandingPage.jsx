@@ -48,7 +48,7 @@ const LandingPage = () => {
                     </div>
 
                     {/* Features Mini Section */}
-                    <div className="grid grid-cols-3 gap-6 mt-16 text-left opacity-80">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-16 text-left opacity-80">
                         <div>
                             <h3 className="font-bold text-xl text-violet-300 mb-1">⚡ Fast</h3>
                             <p className="text-sm font-light text-gray-400">Real-time Socket connection</p>
